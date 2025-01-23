@@ -1,0 +1,26 @@
+// Colors
+$color-very-dark-gray: hsl(0, 0%, 17%);
+$color-dark-gray: hsl(0, 0%, 59%);
+$color-black: hsl(0, 0%, 0%);
+$color-white: hsl(0, 0%, 100%);
+
+// Typography -- Body Copy
+$font-size: 16px; // Paragraph
+
+// Typography -- Fonts
+@import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
+$font-family: "Rubik", sans-serif; // https://fonts.google.com/specimen/Rubik
+$weights: (
+  "regular": 400,
+  "medium": 500,
+  "bold": 700,
+);
+
+// Screen Breakpoints
+$breakpoints: (
+  "xsmall": 375px,
+  "small": 576px,
+  "medium": 768px,
+  "large": 992px,
+  "xlarge": 1200px,
+);

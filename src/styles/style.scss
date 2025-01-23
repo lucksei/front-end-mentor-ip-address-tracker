@@ -1,0 +1,153 @@
+@use "sass:map";
+@use "./_style_guide.scss" as *;
+
+// #####################
+// *** App Container ***
+// #####################
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+// ########################
+// *** Banner Container ***
+// ########################
+
+.app-container .banner-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 1rem 1rem calc(var(--info-modal-height) / 2) 1rem;
+  background-image: url("./../../images/pattern-bg-mobile.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-color: blue;
+  overflow-y: visible;
+
+  h1 {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: map.get($weights, "medium");
+    margin: 0.8rem 0 0.8rem 0;
+  }
+}
+
+// ##################
+// *** Search Bar ***
+// ##################
+
+.app-container .banner-container .search-bar {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  height: 3.3rem;
+  width: 100%;
+  border-radius: 1rem;
+  margin: 1rem 0;
+
+  @media (min-width: map.get($breakpoints, "medium")) {
+    max-width: 600px;
+  }
+
+  .search-bar--input {
+    height: 100%;
+    width: 100%;
+    border: none;
+    padding: 0.8rem;
+    font-size: 1.1rem;
+    font-weight: map.get($weights, "regular");
+    color: $color-very-dark-gray;
+  }
+
+  .search-bar--btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 3.5rem;
+    border: none;
+    background-color: $color-black;
+    cursor: pointer;
+  }
+}
+
+// ##################
+// *** Info Modal ***
+// ##################
+
+.app-container .banner-container .info-modal {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  background-color: $color-white;
+  border-radius: 1rem;
+  padding: 1rem 2rem;
+  width: calc(100% - 2rem);
+  top: calc(100% - calc(var(--info-modal-height) / 2));
+  z-index: 1000 !important;
+
+  @media (min-width: map.get($breakpoints, "medium")) {
+    flex-direction: row;
+    justify-content: space-between;
+    width: calc(100% - 9rem);
+    max-width: 1200px;
+  }
+
+  .info-modal--ip-address,
+  .info-modal--location,
+  .info-modal--timezone,
+  .info-modal--isp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1rem;
+
+    @media (min-width: map.get($breakpoints, "medium")) {
+      position: relative;
+      align-items: flex-start;
+      margin-right: 3rem;
+      padding-bottom: 1.5rem;
+    }
+
+    .title {
+      color: $color-dark-gray;
+      font-size: 0.6rem;
+      font-weight: map.get($weights, "bold");
+      margin-bottom: 0.5rem;
+    }
+    .value {
+      color: $color-black;
+      font-size: 1.2rem;
+      font-weight: map.get($weights, "medium");
+    }
+  }
+}
+
+@media (min-width: map.get($breakpoints, "medium")) {
+  .info-modal--location,
+  .info-modal--timezone,
+  .info-modal--isp {
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -1.6rem;
+      width: 1px;
+      height: calc(100% - 1rem);
+      background-color: $color-dark-gray;
+    }
+  }
+}
+
+// #####################
+// *** Map Container ***
+// #####################
+
+.app-container .map-container {
+  width: 100%;
+  height: 100%;
+}
