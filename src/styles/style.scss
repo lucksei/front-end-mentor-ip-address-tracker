@@ -75,27 +75,51 @@
     cursor: pointer;
   }
 
-  .search-bar--popup-container {
+  .search-bar--popup-wrapper {
     position: absolute;
+    z-index: 1001 !important;
     bottom: 0;
     left: 0;
+
+    @mixin popup-color($background-color: $color-black, $color: $color-white) {
+      background-color: $background-color;
+      color: $color;
+      box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.4);
+      font-weight: map.get($weights, "regular");
+      font-size: 0.7rem;
+      cursor: pointer;
+      opacity: 1;
+    }
+
+    $triangle-file: "data:image/svg+xml;charset=UTF-8,<svg xmlns='http://www.w3.org/2000/svg' height='10' width='16'><polygon points='8,0 16,10 0,10'/></svg>";
+    $triangle-height: 10px;
+    $translate-x: 0rem;
     .search-bar--popup {
       position: fixed;
       overflow: visible;
-      max-width: 300px;
-      background-color: $color-black;
-      transform: translateY(20px);
+      max-width: clamp(0px, calc(100% - 2rem), 600px);
+      @include popup-color;
+      padding: 0.8rem;
+      border-radius: 1rem;
+      transform: translate($translate-x, $triangle-height);
     }
-    $triangle-file: "data:image/svg+xml;charset=UTF-8,<svg xmlns='http://www.w3.org/2000/svg' height='10' width='16'><polygon points='8,0 16,10 0,10' fill='black'/></svg>";
-    &::before {
+
+    &::after {
       content: "";
       position: fixed;
       display: block;
       width: 32px;
-      height: 20px;
-      background: url($triangle-file) no-repeat center;
-      background-size: contain;
-      transform: translate(16px, 0);
+      height: $triangle-height;
+      @include popup-color;
+      transform: translate(calc(16px + $translate-x), 0);
+
+      /* masking */
+      mask: url($triangle-file) no-repeat center;
+      -webkit-mask: url($triangle-file) no-repeat center;
+      mask-size: contain;
+      -webkit-mask-size: contain;
+      mask-composite: intersect;
+      -webkit-mask-composite: intersect;
     }
   }
 }
@@ -105,11 +129,11 @@
 // ##################
 
 .app-container .banner-container .info-modal {
-  visibility: hidden !important;
   position: absolute;
   display: flex;
   flex-direction: column;
   background-color: $color-white;
+  box-shadow: 0px 10px 15px 0px rgba(0, 0, 0, 0.4);
   border-radius: 1rem;
   padding: 1rem 2rem;
   width: calc(100% - 2rem);
