@@ -1,5 +1,5 @@
 import React from "react";
-import { useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useApiData } from "./../hooks/api_data_provider.jsx";
 import { useError } from "./../hooks/error_provider.jsx";
 
@@ -8,9 +8,60 @@ const SearchBar = () => {
   const { fetchApiData, fetchApiDataDummy, getApiData } = useApiData();
   const { setNewError } = useError();
 
+  // States
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+
   // Refs
   const searchBarRef = useRef();
-  const popupContainerRef = useRef();
+
+  const onPopupClose = () => {
+    setShowPopup(false);
+  };
+
+  const openPopup = (messageString) => {
+    setPopupMessage(messageString);
+    setShowPopup(true);
+  };
+
+  /**
+   * Handles the search event when the form is submitted
+   * @param {Event} event - The submit event
+   * @returns
+   */
+  const handleSearch = async (event) => {
+    event.preventDefault();
+    const inputValue = searchBarRef.current.value;
+
+    if (inputValue === "") {
+      openPopup("Input field is required");
+      return;
+    }
+
+    // Sanitize input
+    let inputData = null;
+    if (isIP(inputValue)) {
+      inputData = { ipAddress: inputValue };
+    } else if (isDomain(inputValue)) {
+      inputData = { domain: inputValue };
+    } else if (isEmail(inputValue)) {
+      inputData = { email: inputValue };
+    } else {
+      openPopup("Invalid input, should be IP, domain or email");
+      return;
+    }
+    try {
+      const data = await fetchApiData(inputData);
+    } catch (err) {
+      openPopup(err.message);
+      setNewError(err.message);
+      // TODO: also display any input error on a CSS popup in the search bar in the search bar
+    }
+    console.log(process.env.NODE_ENV, data); // TODO: Remove log, only for testing
+
+    // Clear input
+    searchBarRef.current.value = "";
+  };
 
   // Icons
   const iconArrow = (
@@ -28,30 +79,57 @@ const SearchBar = () => {
         required
         ref={searchBarRef}
       ></input>
-      <button
-        type="submit"
-        className="search-bar--btn"
-        onClick={() => {
-          handleSearch(searchBarRef);
-        }}
-      >
+      <button type="submit" className="search-bar--btn" onClick={handleSearch}>
         {iconArrow}
       </button>
-      <div className="search-bar--popup-container" ref={popupContainerRef}>
+      {showPopup && (
         <SearchBarPopup
-          messageString={
-            "Custom error message that would be too large to fit on the screen if it were to be displayed on mobile to test out the styles"
-          }
+          messageString={popupMessage}
+          onClose={onPopupClose}
         ></SearchBarPopup>
-      </div>
+      )}
     </div>
   );
 };
 
-const SearchBarPopup = ({ messageString }) => {
+const SearchBarPopup = ({ messageString, onClose }) => {
+  const timeoutHide = 10 * 1000;
+  const timeoutAnimation = 500;
+
+  const popupRef = useRef();
+  // Start the fade out animation after 10 seconds
+  useEffect(() => {
+    // Start the fading out animation
+    const fadeOutTimer = setTimeout(() => {
+      popupRef.current.classList.add("fade-out");
+    }, timeoutHide);
+
+    // Close the popup
+    const cleanUpTimer = setTimeout(() => {
+      if (onClose) onClose();
+    }, timeoutHide + timeoutAnimation);
+
+    return () => {
+      clearTimeout(fadeOutTimer);
+      clearTimeout(cleanUpTimer);
+    };
+  }, [onClose]);
+
+  // Fade out if the popup is clicked
+  const handlePopupClick = () => {
+    popupRef.current.classList.add("fade-out");
+    const cleanUpTimer = setTimeout(() => {
+      if (onClose) onClose();
+    }, timeoutAnimation);
+
+    return () => {
+      clearTimeout(cleanUpTimer);
+    };
+  };
+
   return (
-    <div className="search-bar--popup-wrapper">
-      <div className="search-bar--popup">
+    <div className="search-bar--popup-wrapper" ref={popupRef}>
+      <div className="search-bar--popup" onClick={handlePopupClick}>
         <p>{messageString}</p>
       </div>
     </div>
@@ -87,41 +165,4 @@ const isEmail = (email) => {
     return false;
   }
   return true;
-};
-
-/**
- * Handles the search event when the form is submitted
- * @param {Event} event - The submit event
- * @returns
- */
-const handleSearch = async (event, searchBarRef) => {
-  event.preventDefault();
-  const inputValue = searchBarRef.current.value;
-
-  if (inputValue === "") {
-    setNewError("Input field is required");
-    return;
-  }
-
-  // Sanitize input
-  let inputData = null;
-  if (isIP(inputValue)) {
-    inputData = { ipAddress: inputValue };
-  } else if (isDomain(inputValue)) {
-    inputData = { domain: inputValue };
-  } else if (isEmail(inputValue)) {
-    inputData = { email: inputValue };
-  } else {
-    setNewError("Invalid input, should be IP, domain or email");
-    return;
-  }
-  try {
-    const data = await fetchApiData(inputData);
-  } catch (err) {
-    // TODO: also display any input error on a CSS popup in the search bar in the search bar
-  }
-  console.log(process.env.NODE_ENV, data); // TODO: Remove log, only for testing
-
-  // Clear input
-  searchBarRef.current.value = "";
 };

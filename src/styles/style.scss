@@ -1,5 +1,6 @@
 @use "sass:map";
 @use "./_style_guide.scss" as *;
+@use "./_utility.scss" as *;
 
 // #####################
 // *** App Container ***
@@ -80,6 +81,10 @@
     z-index: 1001 !important;
     bottom: 0;
     left: 0;
+
+    &.fade-out {
+      animation: fadeOut 0.5s ease-in-out forwards;
+    }
 
     @mixin popup-color($background-color: $color-black, $color: $color-white) {
       background-color: $background-color;
