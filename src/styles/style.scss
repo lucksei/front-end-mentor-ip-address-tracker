@@ -41,6 +41,7 @@
 // ##################
 
 .app-container .banner-container .search-bar {
+  position: relative;
   display: flex;
   flex-direction: row;
   overflow: hidden;
@@ -73,6 +74,30 @@
     background-color: $color-black;
     cursor: pointer;
   }
+
+  .search-bar--popup-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    .search-bar--popup {
+      position: fixed;
+      overflow: visible;
+      max-width: 300px;
+      background-color: $color-black;
+      transform: translateY(20px);
+    }
+    $triangle-file: "data:image/svg+xml;charset=UTF-8,<svg xmlns='http://www.w3.org/2000/svg' height='10' width='16'><polygon points='8,0 16,10 0,10' fill='black'/></svg>";
+    &::before {
+      content: "";
+      position: fixed;
+      display: block;
+      width: 32px;
+      height: 20px;
+      background: url($triangle-file) no-repeat center;
+      background-size: contain;
+      transform: translate(16px, 0);
+    }
+  }
 }
 
 // ##################
@@ -80,6 +105,7 @@
 // ##################
 
 .app-container .banner-container .info-modal {
+  visibility: hidden !important;
   position: absolute;
   display: flex;
   flex-direction: column;

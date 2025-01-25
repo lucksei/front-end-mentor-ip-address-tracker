@@ -2,49 +2,50 @@ import React from "react";
 import { createContext, useContext, useState } from "react";
 import dummyData from "./../raw_api_response.json";
 
+import { useError } from "./error_provider.jsx";
+
 export const ApiDataContext = createContext();
 
 export const ApiDataProvider = ({ children }) => {
   const [apiData, setApiData] = useState(null); // Holds the API data
+  const { setNewError } = useError();
 
   /**
    * Fetches IP data from the IP Geolocation API by IPify.
-   * @param {string} [ipAddress=null] - (optional) IP address to query.
-   * @param {string} [domain=null] - (optional) Domain to query.
-   * @param {string} [email=null] - (optional) Email to query.
-   * @returns {Promise<void>}
+   * @param {{ ipAddress: string, domain: string, email: string }} params
+   * @returns {Promise} - A promise that resolves to the fetched IP data.
    */
-  const fetchApiData = async ({
-    ipAddress = null,
-    domain = null,
-    email = null,
-  }) => {
-    // Build the URL with query parameters
-    let urlParams = new URLSearchParams();
+  const fetchApiData = async ({ ipAddress, domain, email }) => {
+    const urlParams = new URLSearchParams();
     urlParams.append("apiKey", process.env.IPIFY_API_KEY);
-    if (email) {
-      urlParams.append("email", email);
-    }
-    if (domain) {
-      urlParams.append("domain", domain);
-    }
-    if (ipAddress) {
-      urlParams.append("ipAddress", ipAddress);
-    }
-    const url = "https://geo.ipify.org/api/v2/country?" + urlParams.toString();
+    if (email) urlParams.append("email", email);
+    if (domain) urlParams.append("domain", domain);
+    if (ipAddress) urlParams.append("ipAddress", ipAddress);
+    const url = `https://geo.ipify.org/api/v2/country?${urlParams.toString()}`;
 
-    try {
-      const response = await fetch(url, {
-        method: "GET",
-      });
-      if (!response.ok) throw new Error("Failed to fetch IP data");
-      const data = await response.json();
+    switch (process.env.NODE_ENV) {
+      case "production":
+        const response = await fetch(url, { method: "GET" });
 
-      // Set the API data
-      setApiData(data);
-      return data;
-    } catch (err) {
-      throw new Error(err.message);
+        if (!response.ok) {
+          setNewError("Failed to fetch IP data");
+          throw new Error("Failed to fetch IP data");
+        }
+
+        const data = await response.json();
+
+        setApiData(data);
+        return data;
+
+      default:
+        try {
+          const data = await fetchApiDataDummy();
+          setApiData(data);
+        } catch (err) {
+          setNewError(err.message);
+          throw new Error(err.message);
+        }
+        return data;
     }
   };
 
@@ -56,12 +57,16 @@ export const ApiDataProvider = ({ children }) => {
    */
   const fetchApiDataDummy = async () => {
     try {
-      const data = await new Promise((resolve) => {
-        setTimeout(() => resolve(dummyData), 1000);
+      const data = await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          reject(new Error("Failed to fetch IP data"));
+          // resolve(dummyData);
+        }, 1000);
       });
       setApiData(data);
       return data;
     } catch (err) {
+      setNewError(err.message);
       throw new Error(err.message);
     }
   };

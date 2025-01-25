@@ -1,41 +1,47 @@
 import React from "react";
 import { useRef } from "react";
 import { useApiData } from "./../hooks/api_data_provider.jsx";
+import { useError } from "./../hooks/error_provider.jsx";
 
 const SearchBar = () => {
-  const { fetchApiData, fetchApiDataDummy, getApiData } = useApiData();
   const searchBarRef = useRef();
+  const { fetchApiData, fetchApiDataDummy, getApiData } = useApiData();
+  const { setNewError } = useError();
 
-  // TODO: modify so that errors are displayed instead
+  /**
+   * Handles the search event when the form is submitted
+   * @param {Event} event - The submit event
+   * @returns
+   */
   const handleSearch = async (event) => {
     event.preventDefault();
     const inputValue = searchBarRef.current.value;
 
     if (inputValue === "") {
-      console.log("IP, domain or email required"); // TODO: Display error message, remove this log
+      setNewError("Input field is required");
       return;
     }
 
-    switch (process.env.NODE_ENV) {
-      case "production":
-        if (isIP(inputValue)) {
-          inputData = { ipAddress: inputValue };
-        } else if (isDomain(inputValue)) {
-          inputData = { domain: inputValue };
-        } else if (isEmail(inputValue)) {
-          inputData = { email: inputValue };
-        } else {
-          throw new Error("Invalid input"); // TODO: Display error message instead, remove this later
-        }
-        data = await fetchApiData(inputData);
-        console.log(process.env.NODE_ENV, data); // TODO: Remove log, only for testing
-        break;
-      default:
-        const data = await fetchApiDataDummy();
-        console.log(process.env.NODE_ENV, data); // TODO: Remove log, only for testing
-        break;
+    // Sanitize input
+    let inputData = null;
+    if (isIP(inputValue)) {
+      inputData = { ipAddress: inputValue };
+    } else if (isDomain(inputValue)) {
+      inputData = { domain: inputValue };
+    } else if (isEmail(inputValue)) {
+      inputData = { email: inputValue };
+    } else {
+      setNewError("Invalid input, should be IP, domain or email");
+      return;
     }
+    try {
+      const data = await fetchApiData(inputData);
+    } catch (err) {
+      // TODO: also display any input error on a CSS popup in the search bar in the search bar
+    }
+    console.log(process.env.NODE_ENV, data); // TODO: Remove log, only for testing
 
+    // Clear input
     searchBarRef.current.value = "";
   };
 
@@ -57,6 +63,17 @@ const SearchBar = () => {
       <button type="submit" className="search-bar--btn" onClick={handleSearch}>
         {iconArrow}
       </button>
+      <SearchBarPopup messageString={"Test message"}></SearchBarPopup>
+    </div>
+  );
+};
+
+const SearchBarPopup = ({ messageString }) => {
+  return (
+    <div className="search-bar--popup-container">
+      <div className="search-bar--popup">
+        <p>{messageString}</p>
+      </div>
     </div>
   );
 };
