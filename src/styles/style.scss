@@ -150,10 +150,12 @@
   z-index: 1000 !important;
 
   @media (min-width: map.get($breakpoints, "medium")) {
-    flex-direction: row;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 1fr;
     width: calc(100% - 9rem);
-    max-width: 1200px;
+    max-width: 900px;
+    height: 150px;
   }
 
   .info-modal--ip-address,
@@ -182,6 +184,11 @@
       color: $color-black;
       font-size: 1.2rem;
       font-weight: map.get($weights, "medium");
+      text-align: center;
+
+      @media (min-width: map.get($breakpoints, "medium")) {
+        text-align: left;
+      }
     }
   }
 }

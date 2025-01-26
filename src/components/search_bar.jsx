@@ -54,7 +54,6 @@ const SearchBar = () => {
     }
     try {
       const data = await fetchApiData(inputData);
-      console.log(data); // TODO: Remove, for debug only
     } catch (err) {
       openPopup(err.message);
       setNewError(err.message);
@@ -149,7 +148,7 @@ const SearchBarPopup = ({ messageString, onClose }) => {
       onClick={handlePopupClick}
       ref={popupRef}
     >
-      <p>{messageString}</p>
+      <span>{messageString}</span>
     </div>
   );
 };

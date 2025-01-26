@@ -76,6 +76,7 @@ export const ApiDataProvider = ({ children }) => {
       value={{
         fetchApiData,
         getApiData,
+        apiData,
       }}
     >
       {children}
