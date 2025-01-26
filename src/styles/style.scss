@@ -105,11 +105,11 @@
     border-radius: 1rem;
 
     &.fade-out {
-      animation: fadeOut 0.5s ease-in-out forwards;
+      animation: fadeOutPopup 0.5s ease-in-out forwards;
     }
 
     &.fade-in {
-      animation: fadeIn 0.5s ease-in-out forwards;
+      animation: fadeOutPopup 0.5s ease-in-out reverse;
     }
 
     &::after {

@@ -72,6 +72,15 @@ const SearchBar = () => {
     searchBarRef.current.style.setProperty("--bottom", `${bottom}px`);
   });
 
+  // When pressing enter on the input field, submit the form
+  useEffect(() => {
+    searchBarRef.current.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        handleSearch(event);
+      }
+    });
+  });
+
   // Icons
   const iconArrow = (
     <svg xmlns="http://www.w3.org/2000/svg" width="11" height="14">
