@@ -1,19 +1,28 @@
 import React from "react";
-import { useRef, useEffect } from "react";
+import { useRef, forwardRef, useEffect } from "react";
 
-const InfoModal = () => {
-  // Get the width of the elemetn dinamically using JS
+const InfoModal = forwardRef(({}, bannerContainerRef) => {
+  // Ref
   const infoModalRef = useRef();
 
   // Set the height of the info modal dynamically
   useEffect(() => {
-    const height = infoModalRef.current.clientHeight;
-    // Set CSS variable
-    document.documentElement.style.setProperty(
-      "--info-modal-height",
-      `${height}px`
-    );
-  });
+    const updateHeight = () => {
+      const height = infoModalRef.current.getBoundingClientRect().height;
+      bannerContainerRef.current.style.setProperty(
+        "--info-modal-height",
+        `${height}px`
+      );
+    };
+    updateHeight();
+
+    addEventListener("resize", updateHeight);
+
+    // Clean up the event listener
+    return () => {
+      removeEventListener("resize", updateHeight);
+    };
+  }, []);
 
   return (
     <div className="info-modal" ref={infoModalRef}>
@@ -36,6 +45,6 @@ const InfoModal = () => {
       </div>
     </div>
   );
-};
+});
 
 export default InfoModal;

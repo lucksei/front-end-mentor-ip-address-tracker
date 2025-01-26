@@ -36,7 +36,6 @@ const SearchBar = () => {
     const inputValue = searchBarInputRef.current.value;
 
     if (inputValue === "") {
-      console.log("dsklfjaslkdfj");
       openPopup("Input field is required");
       return;
     }
