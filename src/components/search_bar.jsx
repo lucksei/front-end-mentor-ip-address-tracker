@@ -5,7 +5,7 @@ import { useError } from "./../hooks/error_provider.jsx";
 
 const SearchBar = () => {
   // Context hooks
-  const { fetchApiData, fetchApiDataDummy, getApiData } = useApiData();
+  const { fetchApiData, getApiData } = useApiData();
   const { setNewError } = useError();
 
   // States
@@ -14,7 +14,9 @@ const SearchBar = () => {
 
   // Refs
   const searchBarRef = useRef();
+  const searchBarInputRef = useRef();
 
+  // Functions
   const onPopupClose = () => {
     setShowPopup(false);
   };
@@ -27,13 +29,14 @@ const SearchBar = () => {
   /**
    * Handles the search event when the form is submitted
    * @param {Event} event - The submit event
-   * @returns
+   * @returns {void} - Nothing
    */
   const handleSearch = async (event) => {
     event.preventDefault();
-    const inputValue = searchBarRef.current.value;
+    const inputValue = searchBarInputRef.current.value;
 
     if (inputValue === "") {
+      console.log("dsklfjaslkdfj");
       openPopup("Input field is required");
       return;
     }
@@ -52,16 +55,24 @@ const SearchBar = () => {
     }
     try {
       const data = await fetchApiData(inputData);
+      console.log(data); // TODO: Remove, for debug only
     } catch (err) {
       openPopup(err.message);
       setNewError(err.message);
-      // TODO: also display any input error on a CSS popup in the search bar in the search bar
     }
-    console.log(process.env.NODE_ENV, data); // TODO: Remove log, only for testing
 
     // Clear input
-    searchBarRef.current.value = "";
+    searchBarInputRef.current.value = "";
   };
+
+  // Get the coordinates of the search bar and store them on variables
+  // This is needed to calculate the position of the popup in css
+  useEffect(() => {
+    const coordinates = searchBarRef.current.getBoundingClientRect();
+    const { top, right, bottom, left, height, width } = coordinates;
+    searchBarRef.current.style.setProperty("--left", `${left}px`);
+    searchBarRef.current.style.setProperty("--bottom", `${bottom}px`);
+  });
 
   // Icons
   const iconArrow = (
@@ -71,13 +82,13 @@ const SearchBar = () => {
   );
 
   return (
-    <div className="search-bar">
+    <div className="search-bar" ref={searchBarRef}>
       <input
         className="search-bar--input"
         type="text"
         placeholder="Search for any IP address or domain"
+        ref={searchBarInputRef}
         required
-        ref={searchBarRef}
       ></input>
       <button type="submit" className="search-bar--btn" onClick={handleSearch}>
         {iconArrow}
@@ -93,12 +104,17 @@ const SearchBar = () => {
 };
 
 const SearchBarPopup = ({ messageString, onClose }) => {
-  const timeoutHide = 10 * 1000;
+  const timeoutHide = 50 * 1000;
   const timeoutAnimation = 500;
 
   const popupRef = useRef();
   // Start the fade out animation after 10 seconds
   useEffect(() => {
+    // remove the fade-in class
+    const fadeInTimer = setTimeout(() => {
+      popupRef.current.classList.remove("fade-in");
+    }, timeoutAnimation);
+
     // Start the fading out animation
     const fadeOutTimer = setTimeout(() => {
       popupRef.current.classList.add("fade-out");
@@ -110,6 +126,7 @@ const SearchBarPopup = ({ messageString, onClose }) => {
     }, timeoutHide + timeoutAnimation);
 
     return () => {
+      clearTimeout(fadeInTimer);
       clearTimeout(fadeOutTimer);
       clearTimeout(cleanUpTimer);
     };
@@ -128,10 +145,12 @@ const SearchBarPopup = ({ messageString, onClose }) => {
   };
 
   return (
-    <div className="search-bar--popup-wrapper" ref={popupRef}>
-      <div className="search-bar--popup" onClick={handlePopupClick}>
-        <p>{messageString}</p>
-      </div>
+    <div
+      className="search-bar--popup fade-in"
+      onClick={handlePopupClick}
+      ref={popupRef}
+    >
+      <p>{messageString}</p>
     </div>
   );
 };

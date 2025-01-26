@@ -33,19 +33,19 @@ export const ApiDataProvider = ({ children }) => {
         }
 
         const data = await response.json();
-
         setApiData(data);
         return data;
 
+      case "development": // Same as default
       default:
         try {
-          const data = await fetchApiDataDummy();
+          const data = await _fetchDummyData();
           setApiData(data);
+          return data;
         } catch (err) {
           setNewError(err.message);
           throw new Error(err.message);
         }
-        return data;
     }
   };
 
@@ -55,18 +55,15 @@ export const ApiDataProvider = ({ children }) => {
    * In case of an error, sets the error state.
    * This function is useful for testing purposes without calling the actual API.
    */
-  const fetchApiDataDummy = async () => {
+  const _fetchDummyData = async () => {
     try {
-      const data = await new Promise((resolve, reject) => {
+      return await new Promise((resolve, reject) => {
         setTimeout(() => {
-          reject(new Error("Failed to fetch IP data"));
-          // resolve(dummyData);
+          // reject(new Error("Failed to fetch IP data"));
+          resolve(dummyData);
         }, 1000);
       });
-      setApiData(data);
-      return data;
     } catch (err) {
-      setNewError(err.message);
       throw new Error(err.message);
     }
   };
@@ -78,7 +75,6 @@ export const ApiDataProvider = ({ children }) => {
     <ApiDataContext.Provider
       value={{
         fetchApiData,
-        fetchApiDataDummy,
         getApiData,
       }}
     >
