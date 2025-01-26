@@ -9,6 +9,10 @@ const InfoModal = forwardRef(({}, bannerContainerRef) => {
 
   // Ref
   const infoModalRef = useRef();
+  const ipAddressValueRef = useRef();
+  const locationValueRef = useRef();
+  const timezoneValueRef = useRef();
+  const ispValueRef = useRef();
 
   let [ipString, setIpString] = useState("192.212.174.101");
   let [locationString, setLocationString] = useState("Brooklyn, NY 10001");
@@ -36,15 +40,45 @@ const InfoModal = forwardRef(({}, bannerContainerRef) => {
 
   // Recalculate the contents of the info modal when the api data changes
   useEffect(() => {
-    const updateInfoModal = () => {
+    const updateInfoModal = async () => {
       const data = getApiData();
       if (data) {
-        // TODO: add logic to update the info modal
-        console.log(data);
-        setIpString(getIpString(data));
-        setLocationString(getLocationString(data));
-        setTimezoneString(getTimezoneString(data));
-        setIspString(getIspString(data));
+        console.log(data); // TODO: For debugging, delete later
+        // Clear out old values
+        setIpString("");
+        setLocationString("");
+        setTimezoneString("");
+        setIspString("");
+
+        // Animate the ip address
+        animateValueFadeIn(
+          ipAddressValueRef,
+          data,
+          setIpString,
+          getIpString,
+          0
+        );
+
+        // Animate the location
+        animateValueFadeIn(
+          locationValueRef,
+          data,
+          setLocationString,
+          getLocationString,
+          100
+        );
+
+        // Animate the timezone
+        animateValueFadeIn(
+          timezoneValueRef,
+          data,
+          setTimezoneString,
+          getTimezoneString,
+          200
+        );
+
+        // Animate the isp
+        animateValueFadeIn(ispValueRef, data, setIspString, getIspString, 300);
       }
     };
 
@@ -55,20 +89,28 @@ const InfoModal = forwardRef(({}, bannerContainerRef) => {
     <div className="info-modal" ref={infoModalRef}>
       <div className="info-modal--ip-address">
         <span className="title">IP ADDRESS</span>
-        <span className="value">{ipString}</span>
+        <span className="value" ref={ipAddressValueRef}>
+          {ipString}
+        </span>
       </div>
       <div className="info-modal--location">
         <span className="title">LOCATION</span>
-        <span className="value">{locationString}</span>
+        <span className="value" ref={locationValueRef}>
+          {locationString}
+        </span>
       </div>
       <div className="info-modal--timezone">
         {/* <!-- TODO add offset value dynamically using the API --> */}
         <span className="title">TIMEZONE</span>
-        <span className="value">{timezoneString}</span>
+        <span className="value" ref={timezoneValueRef}>
+          {timezoneString}
+        </span>
       </div>
       <div className="info-modal--isp">
         <span className="title">ISP</span>
-        <span className="value">{ispString}</span>
+        <span className="value" ref={ispValueRef}>
+          {ispString}
+        </span>
       </div>
     </div>
   );
@@ -100,4 +142,37 @@ const getIspString = (data) => {
   if (data) {
     return data.isp.toString();
   }
+};
+
+/**
+ * Animates the fade-in effect for a value within a specified reference.
+ *
+ * @param {Object} ref - The reference to the DOM element to apply the fade-in animation.
+ * @param {Object} data - The data used to retrieve the new value.
+ * @param {Function} setCallback - The function to set the new value.
+ * @param {Function} getCallback - The function to get the new value from the data.
+ * @param {number} timeBeforeAnimation - The delay in milliseconds before starting the fade-in animation.
+ */
+const animateValueFadeIn = async (
+  ref,
+  data,
+  setCallback,
+  getCallback,
+  timeBeforeAnimation
+) => {
+  // Wait for a specified amount of time
+  await new Promise((resolve) =>
+    setTimeout(() => resolve(), timeBeforeAnimation)
+  );
+  // Add the fade in class
+  ref.current.classList.add("fade-in");
+  // Change the value
+  setCallback(getCallback(data));
+  // Remove the fade in class
+  new Promise((resolve) =>
+    setTimeout(() => {
+      ref.current.classList.remove("fade-in");
+      return resolve();
+    }, 1500)
+  );
 };

@@ -21,10 +21,11 @@ export const ApiDataProvider = ({ children }) => {
     if (email) urlParams.append("email", email);
     if (domain) urlParams.append("domain", domain);
     if (ipAddress) urlParams.append("ipAddress", ipAddress);
-    const url = `https://geo.ipify.org/api/v2/country?${urlParams.toString()}`;
+    const url = `https://geo.ipify.org/api/v2/country,city?${urlParams.toString()}`;
 
-    switch (process.env.NODE_ENV) {
-      case "production":
+    switch (process.env.REAL_API_DATA) {
+      case "true":
+        console.log(`fetching real data, env: ${process.env.REAL_API_DATA}`);
         const response = await fetch(url, { method: "GET" });
 
         if (!response.ok) {
@@ -36,7 +37,8 @@ export const ApiDataProvider = ({ children }) => {
         setApiData(data);
         return data;
 
-      case "development": // Same as default
+      case "false": // Same as default
+        console.log(`fetching fake data, env: ${process.env.REAL_API_DATA}`);
       default:
         try {
           const data = await _fetchDummyData();

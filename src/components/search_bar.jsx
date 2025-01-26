@@ -74,11 +74,16 @@ const SearchBar = () => {
 
   // When pressing enter on the input field, submit the form
   useEffect(() => {
-    searchBarRef.current.addEventListener("keydown", (event) => {
+    const handleKeyDown = (event) => {
       if (event.key === "Enter") {
         handleSearch(event);
       }
-    });
+    };
+    searchBarRef.current.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      searchBarRef.current.removeEventListener("keydown", handleKeyDown);
+    };
   });
 
   // Icons
