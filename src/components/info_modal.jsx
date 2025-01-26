@@ -100,7 +100,6 @@ const InfoModal = forwardRef(({}, bannerContainerRef) => {
         </span>
       </div>
       <div className="info-modal--timezone">
-        {/* <!-- TODO add offset value dynamically using the API --> */}
         <span className="title">TIMEZONE</span>
         <span className="value" ref={timezoneValueRef}>
           {timezoneString}

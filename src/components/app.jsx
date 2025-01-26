@@ -1,4 +1,5 @@
 import React from "react";
+import { useState, useEffect } from "react";
 
 // Import leaflet
 import {
@@ -16,11 +17,27 @@ import SearchBar from "./../components/search_bar.jsx";
 import InfoModal from "./../components/info_modal.jsx";
 import BannerContainer from "./../components/banner_container.jsx";
 
+// Import Context
+import { useApiData } from "./../hooks/api_data_provider.jsx";
+
 // Import styles
 import "./../styles/_reset.scss";
 import "./../styles/style.scss";
 
 function App() {
+  // Context Hooks
+  const { fetchApiData, getApiData, apiData } = useApiData();
+
+  // State Hooks
+  const [coordinates, setCoordinates] = useState([0, 0]); // [51.505, -0.09]
+
+  // Effect to get new coordinates
+  useEffect(() => {
+    const data = getApiData();
+    if (!data) return;
+    setCoordinates([data.location.lat, data.location.lng]);
+  }, [apiData]);
+
   return (
     <div id="app-container" className="app-container">
       <BannerContainer>
@@ -30,7 +47,7 @@ function App() {
       </BannerContainer>
       <MapContainer
         className="map-container"
-        center={[51.505, -0.09]}
+        center={coordinates}
         zoom={13}
         scrollWheelZoom={true}
         zoomControl={false}
@@ -39,14 +56,31 @@ function App() {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Marker position={[51.505, -0.09]} icon={customIcon}>
+        <Marker position={coordinates} icon={customIcon}>
           <Popup>
             A pretty CSS3 popup. <br /> Easily customizable.
           </Popup>
         </Marker>
+        <UpdateMapView coordinates={coordinates} />
       </MapContainer>
     </div>
   );
 }
 
 export default App;
+
+/**
+ * Updates the map view
+ *
+ * @param {{ coordinates: [number, number] }} - Coordinates to center the map [lat, lng]
+ * @returns {void}
+ */
+const UpdateMapView = ({ coordinates }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    map.setView(coordinates, map.getZoom());
+  }, [coordinates, map]);
+
+  return null;
+};
