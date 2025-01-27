@@ -3,15 +3,19 @@ import { createContext, useContext, useState } from "react";
 import dummyData from "./../raw_api_response.json";
 
 import { useError } from "./error_provider.jsx";
+import { usePersistentState } from "./use_persistent_state.jsx";
 
 export const ApiDataContext = createContext();
 
 export const ApiDataProvider = ({ children }) => {
-  const maxApiCalls = 4;
+  const maxApiCalls = 6;
 
   // State Hooks
   const [apiData, setApiData] = useState(null); // Holds the API data
-  const [totalApiCalls, setTotalApiCalls] = useState(0);
+  const [totalApiCalls, setTotalApiCalls] = usePersistentState(
+    "totalApiCalls",
+    0
+  );
 
   // Context Hooks
   const { setNewError } = useError();
@@ -23,13 +27,13 @@ export const ApiDataProvider = ({ children }) => {
    */
   const fetchApiData = async ({ ipAddress, domain, email } = {}) => {
     // Check if the maximum number of API calls has been reached
-    if (totalApiCalls >= maxApiCalls) {
+    if (totalApiCalls > maxApiCalls) {
       throw new Error(
         "Maximum number of API calls has been reached. Please try again later."
       );
     } else {
       setTotalApiCalls(totalApiCalls + 1);
-      console.log("API calls remaining:", maxApiCalls - totalApiCalls);
+      console.log("API calls remaining:", maxApiCalls - totalApiCalls); // TODO: For debugging only, delete later
     }
 
     // Set the url

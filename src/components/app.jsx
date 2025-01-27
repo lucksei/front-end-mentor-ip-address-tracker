@@ -62,7 +62,9 @@ function App() {
         />
         <Marker position={coordinates} icon={customIcon}>
           <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
+            <span>Latitude:</span> <code>{coordinates[0]}</code>
+            <br />
+            <span>Longitude:</span> <code>{coordinates[1]}</code>
           </Popup>
         </Marker>
         <UpdateMapView coordinates={coordinates} />
