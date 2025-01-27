@@ -45,7 +45,7 @@ const InfoModal = forwardRef(({}, bannerContainerRef) => {
     const updateInfoModal = async () => {
       const data = getApiData();
       if (data) {
-        console.log(data); // TODO: For debugging, delete later
+        // console.log(data); // TODO: For debugging, delete later
         // Clear out old values
         setIpString("");
         setLocationString("");

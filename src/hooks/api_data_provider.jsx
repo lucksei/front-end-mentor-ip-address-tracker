@@ -34,7 +34,7 @@ export const ApiDataProvider = ({ children }) => {
   const fetchApiData = async ({ ipAddress, domain, email } = {}) => {
     // Check if it's been more than an hour since the last API call
     if (lastApiCall + resetApiCallsTimeMillis < new Date().getTime()) {
-      console.log("Resetting API calls");
+      // console.log("Resetting API calls");
       setTotalApiCalls(0);
       setLastApiCall(new Date().getTime());
     }
@@ -46,8 +46,8 @@ export const ApiDataProvider = ({ children }) => {
     } else {
       setTotalApiCalls(totalApiCalls + 1);
       setLastApiCall(new Date().getTime());
-      console.log("API calls remaining:", maxApiCalls - totalApiCalls); // TODO: For debugging only, delete later
-      console.log("Last API call:", lastApiCall);
+      // console.log("API calls remaining:", maxApiCalls - totalApiCalls); // TODO: For debugging only, delete later
+      // console.log("Last API call:", lastApiCall);
     }
 
     // Set the url
@@ -61,7 +61,7 @@ export const ApiDataProvider = ({ children }) => {
     // Fetch the data from the API
     switch (process.env.REAL_API_DATA) {
       case "true":
-        console.log(`fetching real data, env: ${process.env.REAL_API_DATA}`);
+        // console.log(`fetching real data, env: ${process.env.REAL_API_DATA}`);
         const response = await fetch(url, { method: "GET" });
 
         if (!response.ok) {
@@ -75,7 +75,7 @@ export const ApiDataProvider = ({ children }) => {
 
       case "false": // Same as default
       default:
-        console.log(`fetching fake data, env: ${process.env.REAL_API_DATA}`);
+        // console.log(`fetching fake data, env: ${process.env.REAL_API_DATA}`);
         try {
           const data = await _fetchDummyData();
           setApiData(data);

@@ -31,8 +31,13 @@ function App() {
   // State Hooks
   const [coordinates, setCoordinates] = useState([32.69922, -117.11281]); // [51.505, -0.09]
 
+  // Fetch the data once
   useEffect(() => {
-    const data = fetchApiData();
+    try {
+      const data = fetchApiData();
+    } finally {
+      return;
+    }
   }, []);
 
   // Effect to get new coordinates
