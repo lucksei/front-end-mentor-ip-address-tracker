@@ -1,6 +1,6 @@
 import React from "react";
 import { createContext, useContext, useState } from "react";
-import dummyData from "./../raw_api_response.json";
+import dummyData from "./../files/raw_api_response.json";
 
 import { useError } from "./error_provider.jsx";
 import { usePersistentState } from "./use_persistent_state.jsx";
