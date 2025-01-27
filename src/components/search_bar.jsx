@@ -52,15 +52,16 @@ const SearchBar = () => {
       openPopup("Invalid input, should be IP, domain or email");
       return;
     }
+
+    // Clear input field
+    searchBarInputRef.current.value = "";
+
     try {
       const data = await fetchApiData(inputData);
     } catch (err) {
       openPopup(err.message);
       setNewError(err.message);
     }
-
-    // Clear input
-    searchBarInputRef.current.value = "";
   };
 
   // Get the coordinates of the search bar and store them on variables
