@@ -90,7 +90,7 @@ const UpdateMapView = ({ coordinates }) => {
   const map = useMap();
 
   useEffect(() => {
-    map.setView(coordinates, map.getZoom());
+    map.setView(coordinates, 13);
   }, [coordinates, map]);
 
   return null;
