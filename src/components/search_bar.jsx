@@ -170,16 +170,18 @@ const SearchBarPopup = ({ messageString, onClose }) => {
 export default SearchBar;
 
 const isIP = (ip) => {
-  const re = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/;
+  const re = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
   if (re.test(ip) === false) {
     return false;
   }
-  ip.split(".").forEach((octect) => {
-    if (!(octect >= 0 || octect <= 255)) {
+  return ip.split(".").every((octect) => {
+    try {
+      const octectInt = parseInt(octect);
+      return octectInt >= 0 && octectInt <= 255;
+    } catch {
       return false;
     }
   });
-  return true;
 };
 
 const isDomain = (domain) => {

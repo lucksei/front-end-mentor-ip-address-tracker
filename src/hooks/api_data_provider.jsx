@@ -7,7 +7,13 @@ import { useError } from "./error_provider.jsx";
 export const ApiDataContext = createContext();
 
 export const ApiDataProvider = ({ children }) => {
+  const maxApiCalls = 4;
+
+  // State Hooks
   const [apiData, setApiData] = useState(null); // Holds the API data
+  const [totalApiCalls, setTotalApiCalls] = useState(0);
+
+  // Context Hooks
   const { setNewError } = useError();
 
   /**
@@ -15,7 +21,18 @@ export const ApiDataProvider = ({ children }) => {
    * @param {{ ipAddress: string, domain: string, email: string }} params
    * @returns {Promise} - A promise that resolves to the fetched IP data.
    */
-  const fetchApiData = async ({ ipAddress, domain, email }) => {
+  const fetchApiData = async ({ ipAddress, domain, email } = {}) => {
+    // Check if the maximum number of API calls has been reached
+    if (totalApiCalls >= maxApiCalls) {
+      throw new Error(
+        "Maximum number of API calls has been reached. Please try again later."
+      );
+    } else {
+      setTotalApiCalls(totalApiCalls + 1);
+      console.log("API calls remaining:", maxApiCalls - totalApiCalls);
+    }
+
+    // Set the url
     const urlParams = new URLSearchParams();
     urlParams.append("apiKey", process.env.IPIFY_API_KEY);
     if (email) urlParams.append("email", email);
@@ -23,6 +40,7 @@ export const ApiDataProvider = ({ children }) => {
     if (ipAddress) urlParams.append("ipAddress", ipAddress);
     const url = `https://geo.ipify.org/api/v2/country,city?${urlParams.toString()}`;
 
+    // Fetch the data from the API
     switch (process.env.REAL_API_DATA) {
       case "true":
         console.log(`fetching real data, env: ${process.env.REAL_API_DATA}`);
@@ -38,8 +56,8 @@ export const ApiDataProvider = ({ children }) => {
         return data;
 
       case "false": // Same as default
-        console.log(`fetching fake data, env: ${process.env.REAL_API_DATA}`);
       default:
+        console.log(`fetching fake data, env: ${process.env.REAL_API_DATA}`);
         try {
           const data = await _fetchDummyData();
           setApiData(data);

@@ -14,10 +14,12 @@ const InfoModal = forwardRef(({}, bannerContainerRef) => {
   const timezoneValueRef = useRef();
   const ispValueRef = useRef();
 
-  let [ipString, setIpString] = useState("192.212.174.101");
-  let [locationString, setLocationString] = useState("Brooklyn, NY 10001");
-  let [timezoneString, setTimezoneString] = useState("UTC -05:00");
-  let [ispString, setIspString] = useState("SpaceX Starlink");
+  let [ipString, setIpString] = useState("8.8.8.8"); // "192.212.174.101"
+  let [locationString, setLocationString] = useState(
+    "California, Mountain View, US"
+  ); // "Brooklyn, NY 10001"
+  let [timezoneString, setTimezoneString] = useState("UTC -08:00"); // "UTC -05:00"
+  let [ispString, setIspString] = useState("Google LLC"); // "SpaceX Starlink"
 
   // Set the height of the info modal dynamically
   useEffect(() => {

@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "REAL_API_DATA=true webpack --mode production",
-    "serve": "REAL_API_DATA=false webpack serve --mode development",
-    "serve-prod": "REAL_API_DATA=true webpack serve --mode development"
+    "serve": "REAL_API_DATA=true webpack serve --mode development",
+    "serve-dummy-api": "REAL_API_DATA=false webpack serve --mode development"
   },
   "author": "lucksei",
   "license": "ISC",

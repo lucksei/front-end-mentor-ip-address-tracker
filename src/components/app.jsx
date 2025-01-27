@@ -29,7 +29,11 @@ function App() {
   const { fetchApiData, getApiData, apiData } = useApiData();
 
   // State Hooks
-  const [coordinates, setCoordinates] = useState([0, 0]); // [51.505, -0.09]
+  const [coordinates, setCoordinates] = useState([32.69922, -117.11281]); // [51.505, -0.09]
+
+  useEffect(() => {
+    const data = fetchApiData();
+  }, []);
 
   // Effect to get new coordinates
   useEffect(() => {
