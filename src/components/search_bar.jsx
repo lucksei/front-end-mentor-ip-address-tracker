@@ -185,7 +185,8 @@ const isIP = (ip) => {
 };
 
 const isDomain = (domain) => {
-  const re = /^((?!-)[A-Za-z0-9-]{1, 63}(?<!-)\\.)+[A-Za-z]{2, 6}$/;
+  const re =
+    /^(?:[_a-z0-9](?:[_a-z0-9-]{0,61}[a-z0-9])?\.)+(?:[a-z](?:[a-z0-9-]{0,61}[a-z0-9])?)?$/;
   if (re.test(domain) === false) {
     return false;
   }

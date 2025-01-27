@@ -27,13 +27,15 @@ export const ApiDataProvider = ({ children }) => {
    */
   const fetchApiData = async ({ ipAddress, domain, email } = {}) => {
     // Check if the maximum number of API calls has been reached
-    if (totalApiCalls > maxApiCalls) {
-      throw new Error(
-        "Maximum number of API calls has been reached. Please try again later."
-      );
-    } else {
-      setTotalApiCalls(totalApiCalls + 1);
-      console.log("API calls remaining:", maxApiCalls - totalApiCalls); // TODO: For debugging only, delete later
+    if (process.env.REAL_API_DATA === "true") {
+      if (totalApiCalls > maxApiCalls) {
+        throw new Error(
+          "Maximum number of API calls has been reached. Please try again later."
+        );
+      } else {
+        setTotalApiCalls(totalApiCalls + 1);
+        console.log("API calls remaining:", maxApiCalls - totalApiCalls); // TODO: For debugging only, delete later
+      }
     }
 
     // Set the url
