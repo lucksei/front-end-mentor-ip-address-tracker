@@ -49,11 +49,13 @@ function App() {
 
   return (
     <div id="app-container" className="app-container">
+      {/* Banner Container */}
       <BannerContainer>
         <h1>IP Address Tracker</h1>
         <SearchBar></SearchBar>
         <InfoModal></InfoModal>
       </BannerContainer>
+      {/* Map Container */}
       <MapContainer
         className="map-container"
         center={coordinates}
@@ -74,6 +76,14 @@ function App() {
         </Marker>
         <UpdateMapView coordinates={coordinates} />
       </MapContainer>
+      {/* Attribution */}
+      <div class="attribution">
+        Challenge by{" "}
+        <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">
+          Frontend Mentor
+        </a>
+        . Coded by <a href="https://github.com/lucksei">@lucksei</a>.
+      </div>
     </div>
   );
 }
@@ -81,7 +91,7 @@ function App() {
 export default App;
 
 /**
- * Updates the map view
+ * Updates the map view when the coordinates change
  *
  * @param {{ coordinates: [number, number] }} - Coordinates to center the map [lat, lng]
  * @returns {void}
