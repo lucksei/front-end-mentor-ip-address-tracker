@@ -14,7 +14,6 @@ This is a solution to the [IP address tracker challenge on Frontend Mentor](http
   - [Continued development](#continued-development)
   - [Useful resources](#useful-resources)
 - [Author](#author)
-- [Acknowledgments](#acknowledgments)
 
 **Note: Delete this note and update the table of contents based on what sections you keep.**
 
@@ -31,85 +30,72 @@ Users should be able to:
 
 ### Screenshot
 
-![](./screenshot.jpg)
-
-Add a screenshot of your solution. The easiest way to do this is to use Firefox to view your project, right-click the page and select "Take a Screenshot". You can choose either a full-height screenshot or a cropped one based on how long the page is. If it's very long, it might be best to crop it.
-
-Alternatively, you can use a tool like [FireShot](https://getfireshot.com/) to take the screenshot. FireShot has a free option, so you don't need to purchase it.
-
-Then crop/optimize/edit your image however you like, add it to your project, and update the file path in the image above.
-
-**Note: Delete this note and the paragraphs above when you add your screenshot. If you prefer not to add a screenshot, feel free to remove this entire section.**
+![](./screenshot.png)
 
 ### Links
 
-- Solution URL: [Add solution URL here](https://your-solution-url.com)
-- Live Site URL: [Add live site URL here](https://your-live-site-url.com)
+- Solution URL: [GitHub Repo](https://github.com/lucksei/front-end-mentor-ip-address-tracker)
+- Live Site URL: [GitHub Pages](https://lucksei.github.io/front-end-mentor-ip-address-tracker/)
 
 ## My process
 
 ### Built with
 
-- Semantic HTML5 markup
-- CSS custom properties
-- Flexbox
-- CSS Grid
 - Mobile-first workflow
+- [Sass](https://sass-lang.com/)
 - [React](https://reactjs.org/) - JS library
-- [Next.js](https://nextjs.org/) - React framework
-- [Styled Components](https://styled-components.com/) - For styles
-
-**Note: These are just examples. Delete this note and replace the list above with your own choices**
 
 ### What I learned
 
-Use this section to recap over some of your major learnings while working through this project. Writing these out and providing code samples of areas you want to highlight is a great way to reinforce your own knowledge.
+I learned how to effectively use some of react hooks like useEffect, useRef, useContext a little better.
 
-To see how you can add code snippets, see below:
+For example, the apiDataProvider hook was an interesting way of managing some more complex states that were shared between components and had to safely be manipulated across the app. Could be better but I'm really proud of how it turned out.
 
-```html
-<h1>Some HTML code I'm proud of</h1>
-```
+The API calls are made using the [ipify](https://www.ipify.org/) API. This API is not free and requires a paid subscription when the free trial expires (which does when you consume 1000 tokens) therefore i created a crude implementation to safeguard one client from abusing the API by making many calls. It can be bypassed easily by cleaning up the cache and botting but tbh i dont care since this is just a challenge for me.
 
-```css
-.proud-of-this-css {
-  color: papayawhip;
+For the front end, i started having problems creating a modal that would overlap the banner and the map exactly in the middle, thinkering a bit with the code and googling i got it right by using variables shared from the JS, and then accessed by the styles.
+
+This same method allowed me to create a fixed position popup for error messages that always followed the search bar component, which was a challenge to get right.
+
+About this popup, making it a text bubble with a triangle pointing to the search bar was a pain but im glad i made the effort lol. Pasting that code below.
+
+```scss
+&::after {
+  content: "";
+  position: absolute;
+  display: block;
+  top: calc(-1 * $triangle-height);
+  left: calc(16px + $translate-x);
+  width: 32px;
+  height: $triangle-height;
+  @include popup-color;
+
+  /* masking */
+  mask: url($triangle-file) no-repeat center;
+  -webkit-mask: url($triangle-file) no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  mask-composite: intersect;
+  -webkit-mask-composite: intersect;
 }
 ```
 
-```js
-const proudOfThisFunc = () => {
-  console.log("🎉");
-};
-```
-
-If you want more help with writing markdown, we'd recommend checking out [The Markdown Guide](https://www.markdownguide.org/) to learn more.
-
-**Note: Delete this note and the content within this section and replace with your own learnings.**
-
 ### Continued development
 
-Use this section to outline areas that you want to continue focusing on in future projects. These could be concepts you're still not completely comfortable with or techniques you found useful that you want to refine and perfect.
-
-**Note: Delete this note and the content within this section and replace with your own plans for continued development.**
+I feel like the project is pretty much done for now,
 
 ### Useful resources
 
-- [Example resource 1](https://www.example.com) - This helped me for XYZ reason. I really liked this pattern and will use it going forward.
-- [Example resource 2](https://www.example.com) - This is an amazing article which helped me finally understand XYZ. I'd recommend it to anyone still learning this concept.
-
-**Note: Delete this note and replace the list above with resources that helped you during the challenge. These could come in handy for anyone viewing your solution or for yourself when you look back on this project in the future.**
+- [Quick start using Leaflet](https://leafletjs.com/examples/quick-start/) - A quick start guide for using Leaflet.
+- [Quick guide to use React Leaflet](https://react-leaflet.js.org/docs/start-setup/) - A quick guide to use React Leaflet, it complements the Leaflet quick start guide.
+- [github.com/alexurquhart/free-tiles](https://github.com/alexurquhart/free-tiles/blob/master/tiles.json) - Free tiles for leaflet.
+- [Stack Overflow question about custom marker icon](https://stackoverflow.com/questions/47723812/custom-marker-icon-with-react-leaflet) - This question helped me to create a custom marker icon.
+- [Stack Overflow question about passing env variables to webpack](https://stackoverflow.com/questions/46224986/how-to-pass-env-file-variables-to-webpack-config) - Shows how to "securely" pass env variables to webpack when working with node.js i think.
+- [Serving Webpack over HTTPS](https://webpack.js.org/configuration/dev-server/#devserver-https) - Useful resource for serving webpack over https since the api calls are done over https and requires this to bypass the cors policy.
+- [Regex101 "Domain Name" library](https://regex101.com/library/SEg6KL) - Regex for validating if it is a domain name.
+- [Medium article about local storage & react states](https://cgarethc.medium.com/syncing-browser-local-storage-with-react-state-and-the-browser-url-in-a-spa-cd97adb10edc) - Good read about synchronizing local storage with React states.
 
 ## Author
 
-- Website - [Add your name here](https://www.your-site.com)
-- Frontend Mentor - [@yourusername](https://www.frontendmentor.io/profile/yourusername)
-- Twitter - [@yourusername](https://www.twitter.com/yourusername)
-
-**Note: Delete this note and add/remove/edit lines above based on what links you'd like to share.**
-
-## Acknowledgments
-
-This is where you can give a hat tip to anyone who helped you out on this project. Perhaps you worked in a team or got some inspiration from someone else's solution. This is the perfect place to give them some credit.
-
-**Note: Delete this note and edit this section's content as necessary. If you completed this challenge by yourself, feel free to delete this section entirely.**
+- Frontend Mentor - [@lucksei](https://www.frontendmentor.io/profile/lucksei)
+- GitHub - [@lucksei](https://github.com/lucksei)
